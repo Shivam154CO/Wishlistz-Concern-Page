@@ -14,11 +14,13 @@ export const createComplaint = async (req, res) => {
       orderId,
       category,
       description,
-      image1,
-      image2,
     } = req.body;
 
     const ticketId = generateTicketId();
+
+    // multer images
+    const image1 = req.files?.image1?.[0]?.filename || "";
+    const image2 = req.files?.image2?.[0]?.filename || "";
 
     const complaint = new Complaint({
       name,
@@ -42,7 +44,7 @@ export const createComplaint = async (req, res) => {
       },
     });
 
-    const mailOptions = {
+    await transporter.sendMail({
       from: process.env.MAIL_USER,
       to: email,
       subject: "Complaint Submitted Successfully",
@@ -52,15 +54,9 @@ Your complaint has been submitted successfully.
 
 Ticket ID: ${ticketId}
 
-Our team will review your complaint and contact you soon.
-
-Thank you for reaching out to us.
-
 Regards,
 Support Team`,
-    };
- 
-    await transporter.sendMail(mailOptions);
+    });
 
     res.status(201).json({
       success: true,
@@ -70,8 +66,7 @@ Support Team`,
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: "Something went wrong",
-      error: error.message,
+      message: error.message,
     });
   }
 };
