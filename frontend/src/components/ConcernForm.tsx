@@ -1,18 +1,6 @@
-
-
-
-
-
-
-
-
-
-
-
-
 // ConcernForm.tsx
-import React, { useState, ChangeEvent, FormEvent } from 'react';
-import { ConcernFormData, IssueCategory } from '../types/concern';
+import React, { useState, ChangeEvent, FormEvent } from "react";
+import { ConcernFormData, IssueCategory } from "../types/concern";
 
 interface ConcernFormProps {
   userEmail?: string;
@@ -22,38 +10,38 @@ interface ConcernFormProps {
 }
 
 const issueCategories: IssueCategory[] = [
-  'Payment issue',
-  'Order not received',
-  'Damaged or wrong item',
-  'Technical bug',
-  'Login/Account issue',
-  'Other concern'
+  "Payment issue",
+  "Order not received",
+  "Damaged or wrong item",
+  "Technical bug",
+  "Login/Account issue",
+  "Other concern",
 ];
 
 const ConcernForm: React.FC<ConcernFormProps> = ({
-  userEmail = '',
-  userName = '',
+  userEmail = "",
+  userName = "",
   onSubmit,
-  isLoading = false
+  isLoading = false,
 }) => {
   const [formData, setFormData] = useState<ConcernFormData>({
     fullName: userName,
     email: userEmail,
-    orderId: '',
-    category: 'Other concern',
-    description: '',
-    screenshots: []
+    orderId: "",
+    category: "Other concern",
+    description: "",
+    screenshots: [],
   });
 
   const [success, setSuccess] = useState(false);
-  const [ticketId, setTicketId] = useState('');
+  const [ticketId, setTicketId] = useState("");
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
 
   const handleInputChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   /* ✅ FIX IS HERE (append files, not replace) */
@@ -62,39 +50,39 @@ const ConcernForm: React.FC<ConcernFormProps> = ({
 
     const newFiles = Array.from(e.target.files);
 
-    setUploadedFiles(prev => {
+    setUploadedFiles((prev) => {
       const updated = [...prev, ...newFiles];
-      setFormData(f => ({ ...f, screenshots: updated }));
+      setFormData((f) => ({ ...f, screenshots: updated }));
       return updated;
     });
 
     // same file dobara select ho sake
-    e.target.value = '';
+    e.target.value = "";
   };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     if (uploadedFiles.length < 2) {
-      alert('Please upload at least 2 images');
+      alert("Please upload at least 2 images");
       return;
     }
 
     const formDataObj = new FormData();
-    formDataObj.append('name', formData.fullName);
-    formDataObj.append('email', formData.email);
-    formDataObj.append('orderId', formData.orderId);
-    formDataObj.append('category', formData.category);
-    formDataObj.append('description', formData.description);
+    formDataObj.append("name", formData.fullName);
+    formDataObj.append("email", formData.email);
+    formDataObj.append("orderId", formData.orderId);
+    formDataObj.append("category", formData.category);
+    formDataObj.append("description", formData.description);
 
     // ✅ both images guaranteed
-    formDataObj.append('image1', uploadedFiles[0]);
-    formDataObj.append('image2', uploadedFiles[1]);
+    formDataObj.append("image1", uploadedFiles[0]);
+    formDataObj.append("image2", uploadedFiles[1]);
 
     try {
-      const res = await fetch('http://localhost:8000/complaint/create', {
-        method: 'POST',
-        body: formDataObj
+      const res = await fetch("http://localhost:8000/complaint/create", {
+        method: "POST",
+        body: formDataObj,
       });
 
       const data = await res.json();
@@ -106,7 +94,7 @@ const ConcernForm: React.FC<ConcernFormProps> = ({
         alert(data.message);
       }
     } catch (err) {
-      alert('Something went wrong');
+      alert("Something went wrong");
     }
   };
 
@@ -114,10 +102,10 @@ const ConcernForm: React.FC<ConcernFormProps> = ({
     setFormData({
       fullName: userName,
       email: userEmail,
-      orderId: '',
-      category: 'Other concern',
-      description: '',
-      screenshots: []
+      orderId: "",
+      category: "Other concern",
+      description: "",
+      screenshots: [],
     });
     setUploadedFiles([]);
     setSuccess(false);
@@ -126,7 +114,7 @@ const ConcernForm: React.FC<ConcernFormProps> = ({
   const removeFile = (index: number) => {
     const updated = uploadedFiles.filter((_, i) => i !== index);
     setUploadedFiles(updated);
-    setFormData(prev => ({ ...prev, screenshots: updated }));
+    setFormData((prev) => ({ ...prev, screenshots: updated }));
   };
 
   /* ================= SUCCESS UI (unchanged) ================= */
@@ -138,12 +126,8 @@ const ConcernForm: React.FC<ConcernFormProps> = ({
             <h1 className="text-3xl font-bold mb-4">
               Issue Reported Successfully!
             </h1>
-            <p className="mb-6 text-gray-600">
-              Your Ticket ID
-            </p>
-            <code className="text-2xl font-bold text-blue-600">
-              {ticketId}
-            </code>
+            <p className="mb-6 text-gray-600">Your Ticket ID</p>
+            <code className="text-2xl font-bold text-blue-600">{ticketId}</code>
 
             <div className="mt-8">
               <button
@@ -165,7 +149,6 @@ const ConcernForm: React.FC<ConcernFormProps> = ({
       <div className="max-w-3xl mx-auto">
         <div className="bg-white rounded-2xl shadow-xl p-8">
           <form onSubmit={handleSubmit} className="space-y-8">
-
             <div>
               <h2 className="text-lg font-semibold text-gray-900 mb-6 pb-3 border-b border-gray-100">
                 Contact Information
@@ -229,7 +212,7 @@ const ConcernForm: React.FC<ConcernFormProps> = ({
                     required
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                   >
-                    {issueCategories.map(category => (
+                    {issueCategories.map((category) => (
                       <option key={category} value={category}>
                         {category}
                       </option>
@@ -260,7 +243,13 @@ const ConcernForm: React.FC<ConcernFormProps> = ({
                   <p className="text-sm text-gray-500">
                     The more details you provide, the better we can help
                   </p>
-                  <span className={`text-sm ${formData.description.length > 1000 ? 'text-red-500' : 'text-gray-500'}`}>
+                  <span
+                    className={`text-sm ${
+                      formData.description.length > 1000
+                        ? "text-red-500"
+                        : "text-gray-500"
+                    }`}
+                  >
                     {formData.description.length}/1000
                   </span>
                 </div>
@@ -276,7 +265,7 @@ const ConcernForm: React.FC<ConcernFormProps> = ({
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Screenshots (At least 2 required) *
                 </label>
-                
+
                 {uploadedFiles.length === 0 ? (
                   <div className="border-3 border-dashed border-gray-300 rounded-xl p-8 text-center bg-gray-50 hover:bg-gray-100 transition cursor-pointer">
                     <input
@@ -288,9 +277,22 @@ const ConcernForm: React.FC<ConcernFormProps> = ({
                       className="hidden"
                       id="screenshot-upload"
                     />
-                    <label htmlFor="screenshot-upload" className="cursor-pointer block">
-                      <svg className="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                    <label
+                      htmlFor="screenshot-upload"
+                      className="cursor-pointer block"
+                    >
+                      <svg
+                        className="w-12 h-12 text-gray-400 mx-auto mb-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
+                        />
                       </svg>
                       <p className="text-gray-700 font-medium mb-1">
                         Click to upload screenshots
@@ -304,11 +306,24 @@ const ConcernForm: React.FC<ConcernFormProps> = ({
                   <div className="space-y-4">
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                       {uploadedFiles.map((file, index) => (
-                        <div key={index} className="relative border border-gray-200 rounded-lg p-3 bg-white group">
+                        <div
+                          key={index}
+                          className="relative border border-gray-200 rounded-lg p-3 bg-white group"
+                        >
                           <div className="flex items-center gap-3">
                             <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center flex-shrink-0">
-                              <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                              <svg
+                                className="w-5 h-5 text-blue-600"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth="2"
+                                  d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                                />
                               </svg>
                             </div>
                             <div className="flex-1 min-w-0">
@@ -325,27 +340,55 @@ const ConcernForm: React.FC<ConcernFormProps> = ({
                             onClick={() => removeFile(index)}
                             className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition"
                           >
-                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                            <svg
+                              className="w-3 h-3"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="M6 18L18 6M6 6l12 12"
+                              />
                             </svg>
                           </button>
                         </div>
                       ))}
                     </div>
-                    
+
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         {uploadedFiles.length >= 2 ? (
                           <span className="flex items-center gap-1 text-green-600 text-sm">
-                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                            <svg
+                              className="w-4 h-4"
+                              fill="currentColor"
+                              viewBox="0 0 20 20"
+                            >
+                              <path
+                                fillRule="evenodd"
+                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                clipRule="evenodd"
+                              />
                             </svg>
                             Minimum requirement met
                           </span>
                         ) : (
                           <span className="flex items-center gap-1 text-red-500 text-sm">
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            <svg
+                              className="w-4 h-4"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                              />
                             </svg>
                             Upload {2 - uploadedFiles.length} more image(s)
                           </span>
@@ -360,8 +403,18 @@ const ConcernForm: React.FC<ConcernFormProps> = ({
                           className="hidden"
                         />
                         <span className="text-sm font-medium text-blue-600 hover:text-blue-700 flex items-center gap-1">
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M12 4v16m8-8H4"
+                            />
                           </svg>
                           Add more files
                         </span>
@@ -376,34 +429,66 @@ const ConcernForm: React.FC<ConcernFormProps> = ({
             <div className="pt-6 border-t border-gray-100">
               <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div className="flex items-center gap-2 text-sm text-gray-500">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
                   </svg>
                   <span>We'll email you updates about your ticket</span>
                 </div>
-                
+
                 <button
                   type="submit"
                   disabled={isLoading || formData.screenshots.length < 2}
                   className={`px-8 py-3 font-medium rounded-lg transition-all duration-200 shadow-md ${
                     isLoading || formData.screenshots.length < 2
-                      ? 'bg-gray-300 text-gray-500 cursor-not-allowed shadow-none'
-                      : 'bg-blue-600 hover:bg-blue-700 text-white hover:shadow-lg'
+                      ? "bg-gray-300 text-gray-500 cursor-not-allowed shadow-none"
+                      : "bg-blue-600 hover:bg-blue-700 text-white hover:shadow-lg"
                   }`}
                 >
                   {isLoading ? (
                     <span className="flex items-center justify-center gap-2">
                       <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                          fill="none"
+                        />
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        />
                       </svg>
                       Submitting...
                     </span>
                   ) : (
                     <span className="flex items-center justify-center gap-2">
                       Submit Issue Report
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M14 5l7 7m0 0l-7 7m7-7H3"
+                        />
                       </svg>
                     </span>
                   )}
